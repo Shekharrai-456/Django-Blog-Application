@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR Blogs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900|Inter:400,500,600" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fdfdfd; }
+        .blog-header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .blog-header-logo:hover { opacity: 0.8; }
+        
+        .nav-scroller {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 2rem;
+        }
+        .nav-scroller .nav-link {
+            font-weight: 500;
+            color: #555;
+            transition: color 0.2s;
+        }
+        .nav-scroller .nav-link:hover { color: #f39c12; }
+
+        .search-bar {
+            border-radius: 50px;
+            padding-left: 1.2rem;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-round { border-radius: 50px; padding-left: 1.5rem; padding-right: 1.5rem; }
+        
+        .blog-footer {
+            padding: 4rem 0;
+            margin-top: 4rem;
+            color: #777;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Subtle transition for all buttons */
+        .btn { transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="blog-header py-4">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1">
+                    <a class="blog-header-logo text-dark" href="/">SR<span class="text-warning">.</span> Blog</a>
+                </div>
+
+                <div class="col-4">
+                    <form action="{% url 'search' %}" method="GET">
+                        <div class="input-group">
+                            <input class="form-control search-bar shadow-sm" type="text" name="keyword" value="{{ keyword|default:'' }}" placeholder="Search stories..." aria-label="Search" />
+                            <button class="btn btn-warning shadow-sm px-3" type="submit" id="button-search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-4 d-flex justify-content-end align-items-center gap-2">
+                    {% if not user.is_authenticated %}
+                        <a class="btn btn-sm btn-warning fw-bold text-white btn-round shadow-sm" href="{% url 'login' %}">Login</a>
+                        <a class="btn btn-sm btn-outline-dark btn-round" href="{% url 'register' %}">Register</a>
+                    {% else %}
+                        <a class="btn btn-sm btn-outline-dark btn-round shadow-sm" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                        <a class="btn btn-sm btn-warning text-white fw-bold btn-round shadow-sm" href="{% url 'logout' %}">Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <div class="nav-scroller py-2 mb-4">
+            <nav class="nav d-flex justify-content-center gap-4">
+                {% for cat in categories %}
+                    <a class="nav-link p-0 small text-uppercase fw-bold" href="{% url 'posts_by_category' cat.id %}">{{ cat.category_name }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+
+        <main class="min-vh-100">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <footer class="blog-footer">
+        <p class="mb-1">© 2026 <strong>SR Blogs</strong>. All rights reserved.</p>
+        <p>SR blog built by <a href="#" class="text-warning text-decoration-none">Shekhar Rai</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
